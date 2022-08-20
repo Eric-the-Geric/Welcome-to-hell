@@ -10,11 +10,11 @@ class Player(pygame.sprite.Sprite):
 
         self.pos = pos
         self.direction = pygame.math.Vector2()
-        self.speed = 6
+        self.speed = 7
         self.gravity = 0.2
         self.jump_height = -3
         self.jumps = 0
-
+        self.max_jumps = 1
         # Player graphics
 
         self.idle = import_images("Graphics/Idle 64x32.png")
@@ -56,7 +56,7 @@ class Player(pygame.sprite.Sprite):
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w and self.jumps < 1:
+                if event.key == pygame.K_w and self.jumps < self.max_jumps:
                     self.direction.y = self.jump_height
                     self.action = "jump"
                     self.image = self.jumping[0]
@@ -85,42 +85,18 @@ class Player(pygame.sprite.Sprite):
     def apply_gravity(self):
         self.direction.y += self.gravity
     
-    def collitions(self):
-
-
-        # looking at all the sprites in the group
-        for sprite in self.collision_group.sprites():
-            # if self.direction.x > 0:
-            #     if self.rect.colliderect(sprite):
-            #         # self.direction.x = 0
-            #         self.rect.right = sprite.rect.left
-            # if self.direction.x <0:
-            #     if self.rect.colliderect(sprite):
-            #         # self.direction.x = 0
-            #         self.rect.left = sprite.rect.right
-
-            #Check for a collision vertical
-            if self.direction.y > 0:
-                if self.rect.colliderect(sprite):
-                    self.direction.y = 0
-                    self.rect.bottom= sprite.rect.top
-
-            elif self.direction.y < 0:
-                if self.rect.colliderect(sprite):
-                    
-                    self.direction.y = 0
-                    self.rect.top = sprite.rect.bottom
-            
     def horizontal_collision(self):
         for sprite in self.collision_group.sprites():
             if sprite.rect.colliderect(self.rect):
                 if self.direction.x < 0 and abs(self.rect.left - sprite.rect.right) < 10:
                     self.rect.left = sprite.rect.right
-                    self.direction.y -= 0.07
+                    # self.direction.y -= 0.07
+                    self.max_jumps = 2
 
                 if self.direction.x > 0 and abs(self.rect.right - sprite.rect.left) < 10:
                     self.rect.right = sprite.rect.left
-                    self.direction.y -= 0.07
+                    # self.direction.y -= 0.07
+                    self.max_jumps = 2
 
     def vertical_collision(self):
         for sprite in self.collision_group.sprites():
@@ -129,6 +105,7 @@ class Player(pygame.sprite.Sprite):
                     self.rect.bottom = sprite.rect.top
                     self.direction.y = 0
                     self.jumps = 0
+                    self.max_jumps = 1
                 if self.direction.y < 0:
                     self.rect.top = sprite.rect.bottom
                     self.direction.y = 0
