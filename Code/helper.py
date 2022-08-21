@@ -25,3 +25,24 @@ def import_images(path):
         temp_list.append(transformed_image)
 
     return temp_list
+
+def import_full_sprite_sheet(path):
+    temp_list = []
+    image = pygame.image.load(path).convert()
+    
+    #sets pixels of this colour to be tramsparent. Then you also need to call convert() not convert_alpha
+    image.set_colorkey((0,0,0))
+    
+    # image.set_alpha(255) --> sets the transparency of the whole image
+    image_width = image.get_width()
+    image_height = image.get_height()
+    rows = image_height // 8
+    cols = image_width // 8
+
+    for i in range(rows):
+        for j in range(cols):
+            new_image = image.subsurface(pygame.Rect(i*8, j*8, 8, 8))
+            transformed_image = pygame.transform.scale(new_image, (8*8, 8*8))
+            temp_list.append(transformed_image)
+
+    return temp_list

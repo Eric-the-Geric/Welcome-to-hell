@@ -17,9 +17,16 @@ class Player(pygame.sprite.Sprite):
         self.max_jumps = 1
         # Player graphics
 
-        self.idle = import_images("Graphics/Idle 64x32.png")
-        self.walking_right = import_images("Graphics/Walking.png")
-        self.jumping = import_images("Graphics/jumping.png")
+        self.sprite_sheet = import_full_sprite_sheet("Graphics/8x8 Spritesheet among us character.png")
+        print(len(self.sprite_sheet))
+
+        self.idle = self.sprite_sheet[0:3]
+        self.walking_right = self.sprite_sheet[3:6]
+        self.jumping = self.sprite_sheet[6:9]
+
+        # self.idle = import_images("Graphics/Idle 64x32.png")
+        # self.walking_right = import_images("Graphics/Walking.png")
+        # self.jumping = import_images("Graphics/jumping.png")
 
         # Player properties (rects etc)
 
@@ -70,6 +77,7 @@ class Player(pygame.sprite.Sprite):
 
     def animate(self):
         if self.direction.y > 0.5:
+            print(len(self.jumping))
             self.image = self.jumping[2]
 
         elif self.action == "idle":
