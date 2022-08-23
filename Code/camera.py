@@ -15,7 +15,8 @@ class Camera(pygame.sprite.Group):
         
     # camera kind of lags behind
     def cool_camera(self, target):
-        self.offset.x += (target.rect.centerx - self.offset.x - self.h_width)/30
+        self.offset.x += (target.rect.centerx - self.offset.x - self.h_width)/15
+        self.offset.y += (target.rect.centery - self.offset.y - self.h_height)/15
 
     def custom_draw(self, target):
         
@@ -24,6 +25,7 @@ class Camera(pygame.sprite.Group):
         for sprite in self.sprites():
             offset_pos = (sprite.rect.topleft - self.offset)
             self.surface.blit(sprite.image, offset_pos)
+
             
             # offset_pos = (sprite.rect.topleft + self.offset)/10 --> this seems to scale everything down by a factor of 10
             

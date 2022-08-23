@@ -1,6 +1,8 @@
 import pygame
 import csv
 from settings import *
+
+
 def import_map_data(path):
 
     temp_list = []
@@ -25,6 +27,7 @@ def import_images(path):
         temp_list.append(transformed_image)
 
     return temp_list
+    
 
 def import_full_sprite_sheet(path):
     temp_list = []
@@ -43,6 +46,27 @@ def import_full_sprite_sheet(path):
         for j in range(cols):
             new_image = image.subsurface(pygame.Rect(i*8, j*8, 8, 8))
             transformed_image = pygame.transform.scale(new_image, (8*8, 8*8))
+            temp_list.append(transformed_image)
+
+    return temp_list
+
+def import_complicated_full_sprite_sheet(path, tile_width, tile_height, scaling_factor, colour_key):
+    temp_list = []
+    image = pygame.image.load(path).convert()
+    
+    #sets pixels of this colour to be tramsparent. Then you also need to call convert() not convert_alpha
+    image.set_colorkey(colour_key)
+    
+    # image.set_alpha(255) --> sets the transparency of the whole image
+    image_width = image.get_width()
+    image_height = image.get_height()
+    rows = image_height // tile_height
+    cols = image_width // tile_width
+
+    for i in range(cols):
+        for j in range(rows):
+            new_image = image.subsurface(pygame.Rect(i*tile_width, j*tile_height, tile_width, tile_height))
+            transformed_image = pygame.transform.scale(new_image, (tile_height*scaling_factor, tile_width*scaling_factor))
             temp_list.append(transformed_image)
 
     return temp_list

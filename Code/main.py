@@ -15,7 +15,7 @@
 import pygame, sys
 from settings import *
 from helper import *
-from level import Level_0, MainMenu, Level_selector
+from level import Level_0, MainMenu, Level_selector, Level_1
 
 def main():
     # Initialize pygame
@@ -23,7 +23,7 @@ def main():
 
     # Constant variables
     surface = pygame.display.set_mode(screen)
-    pygame.display.set_caption('World of doom')
+    pygame.display.set_caption('Kinda sus')
     clock = pygame.time.Clock()
 
     #Boolean for while loop
@@ -33,7 +33,8 @@ def main():
     menu = MainMenu()
     
     # Initialize level
-    level = Level_0()
+    level0 = Level_0()
+    level1 = Level_1()
 
     # Initialize level selector
     level_selector = Level_selector()
@@ -43,7 +44,8 @@ def main():
         surface.fill('black')
         
         if game_state == "level_1":
-            level.run()
+            # level0.run()
+            level1.run()
 
         elif game_state == "main_menu":
             menu.run()
