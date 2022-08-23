@@ -6,7 +6,7 @@ tile_h_number = 20
 
 
 screen_width = 1300
-scaling_factor = 1
+scaling_factor = 1.2
 screen_height = tile_size * tile_h_number*scaling_factor
 screen = (screen_width, screen_height)
 

@@ -112,7 +112,7 @@ class Level_1:
         self.player_group = pygame.sprite.GroupSingle()
         self.visible_group = pygame.sprite.Group()
         self.collision_group = pygame.sprite.Group()
-        self.harmful_group = pygame.sprite.Group()
+        self.animated_group = pygame.sprite.Group()
         self.camera_group = Camera()
 
         # Getting the layout data
@@ -139,24 +139,27 @@ class Level_1:
                                     
         # Setting up map sprites
         
-        self.spikes =  self._create_terrain(self.spikes_layout, "spikes", 81, 63, self.spikes_image)
+        self.spikes =  self._create_terrain(self.spikes_layout, "spikes", 81, 64, self.spikes_image)
         
         self.volcano =  self._create_terrain(self.volcano_layout, "volcano", 52, 110, self.volcano_image)
         
         self.terrain = self._create_terrain(self.terrain_layout, "terrain", 32, 32, self.terrain_image)
         
-        self.lava = self._create_terrain(self.lava_layout, "lava", 32, 32, self.lava_image)
+        
 
         self.boddies =  self._create_terrain(self.boddies_layout, "boddies", 34, 31, self.boddies_image)
         
 
         # Setting up player sprite
-        self.player = self._create_player(self.player_layout)
+        self.player = self._create_player(self.player_layout, )
+
+        self.lava = self._create_terrain(self.lava_layout, "lava", 32, 32, self.lava_image)
         
     def run(self):
+        self.animated_group.update()
         self.camera_group.custom_draw(self.player)
         self.player_group.update()
-            
+        
     
     def _create_player(self, layout):
             for row_index, row in enumerate(layout):
@@ -166,7 +169,7 @@ class Level_1:
                             y = row_index *tile_size*scaling_factor
                             x = col_index *tile_size*scaling_factor
                     
-                            return PlayerAmongUs([self.player_group, self.camera_group], (x,y), self.collision_group, self.harmful_group)
+                            return PlayerAmongUs([self.player_group, self.camera_group], (x,y), self.collision_group)
         
     def _create_terrain(self, layout, type, tile_height, tile_width, image):
             for row_index, row in enumerate(layout):
@@ -177,7 +180,6 @@ class Level_1:
                             if type == "terrain":
                                 StaticTile([self.visible_group, self.collision_group, self.camera_group], (x, y), image[int(value)])
                                
-
                             elif type == "boddies":
                                 StaticTile([self.visible_group,  self.camera_group], (x, y), image[int(value)])
 
@@ -185,7 +187,8 @@ class Level_1:
                                 StaticTile([self.visible_group, self.camera_group], (x, y), image[int(value)])
                             
                             elif type == "volcano":
-                                StaticTile([self.visible_group, self.camera_group], (x, y), image[int(value)])
+                                AnimatedTile([self.visible_group, self.camera_group, self.animated_group], (x, y), image)
+
 
                             elif type == "lava":
                                 StaticTile([self.visible_group, self.camera_group], (x, y), image[int(value)])

@@ -50,7 +50,7 @@ class StaticTile(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect(topleft = pos)
 
-class AnimatedTile(StaticTile):
+class AnimatedTile(pygame.sprite.Sprite):
     def __init__(self, group, pos, image):
         super().__init__(group)
         self.image_list = image
