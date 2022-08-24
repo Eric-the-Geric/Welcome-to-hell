@@ -48,7 +48,7 @@ class Level_0:
         self.camera_group.custom_draw(self.player)
         self.player_group.update()
         if self.player.rect.centery > screen_height*2:
-            self.player.rect.topleft = (10*tile_size*scaling_factor, 11*tile_size*scaling_factor)
+            self.player.rect.topleft = (10*tile_size, 11*tile_size)
             
     
     def _create_player(self, layout):
@@ -56,8 +56,8 @@ class Level_0:
                 for col_index, value in enumerate(row):
                     if value != '-1':
                         if value == '0':
-                            y = row_index *tile_size*scaling_factor
-                            x = col_index *tile_size*scaling_factor
+                            y = row_index *tile_size
+                            x = col_index *tile_size
                     
                             return Player([self.player_group, self.camera_group], (x,y), self.collision_group)
         
@@ -66,16 +66,16 @@ class Level_0:
             for row_index, row in enumerate(layout):
                     for col_index, value in enumerate(row):
                         if value != "-1":
-                            y = row_index *tile_size*scaling_factor
-                            x = col_index *tile_size*scaling_factor
+                            y = row_index *tile_size
+                            x = col_index *tile_size
                             if value == "0":
                                 Background([self.visible_group, self.camera_group], (x, y))
         if type == "terrain":
             for row_index, row in enumerate(layout):
                     for col_index, value in enumerate(row):
                         if value != "-1":
-                            y = row_index *tile_size*scaling_factor
-                            x = col_index *tile_size*scaling_factor
+                            y = row_index *tile_size
+                            x = col_index *tile_size
                             
                             if value == "3":
                                 TerrainTile2([self.visible_group, self.collision_group, self.camera_group], (x, y))
@@ -87,8 +87,8 @@ class Level_0:
             for row_index, row in enumerate(layout):
                     for col_index, value in enumerate(row):
                         if value != "-1":
-                            y = row_index *tile_size*scaling_factor
-                            x = col_index *tile_size*scaling_factor
+                            y = row_index *tile_size
+                            x = col_index *tile_size
                             if value == "4":
                                 Clouds1([self.visible_group, self.camera_group, self.collision_group], (x, y))
                             elif value == "5":
@@ -97,8 +97,8 @@ class Level_0:
             for row_index, row in enumerate(layout):
                     for col_index, value in enumerate(row):
                         if value != "-1":
-                            y = row_index *tile_size*scaling_factor
-                            x = col_index *tile_size*scaling_factor
+                            y = row_index *tile_size
+                            x = col_index *tile_size
                             if value == "1":
                                 Stars([self.visible_group, self.camera_group], (x, y))
 
@@ -126,73 +126,75 @@ class Level_1:
         # Setting up images
         
         self.lava_image = import_complicated_full_sprite_sheet("Graphics2/lava block.png",
-                                                            32, 32, scaling_factor, (255,127,39))
+                                                            32, 32, (255,127,39))
         self.terrain_image = import_complicated_full_sprite_sheet("Graphics2/grass.png",
-                                                            32, 32, scaling_factor, (255,127,39))
+                                                            32, 32, (255,127,39))
         self.spikes_image = import_complicated_full_sprite_sheet("Graphics2/rockspikes.png",
-                                                            81, 63, scaling_factor, (255,127,39))
+                                                            81, 63, (255,127,39))
         self.volcano_image = import_complicated_full_sprite_sheet("Graphics2/volcano.png",
-                                                            110, 52, scaling_factor, (255,127,39))
+                                                            110, 52, (255,127,39))
         self.boddies_image = import_complicated_full_sprite_sheet("Graphics2/dead.png",
-                                                            31, 34, scaling_factor, (255,127,39))                                                        
+                                                            31, 34, (255,127,39))                                                        
 
                                     
         # Setting up map sprites
         
-        self.spikes =  self._create_terrain(self.spikes_layout, "spikes", 81, 64, self.spikes_image)
+        self.spikes =  self._create_terrain(self.spikes_layout, "spikes", 32, 32, self.spikes_image)
         
-        self.volcano =  self._create_terrain(self.volcano_layout, "volcano", 52, 110, self.volcano_image)
+        self.volcano =  self._create_terrain(self.volcano_layout, "volcano", 32, 32, self.volcano_image)
         
         self.terrain = self._create_terrain(self.terrain_layout, "terrain", 32, 32, self.terrain_image)
         
         
 
-        self.boddies =  self._create_terrain(self.boddies_layout, "boddies", 34, 31, self.boddies_image)
+        self.boddies =  self._create_terrain(self.boddies_layout, "boddies", 32, 32, self.boddies_image)
         
 
         # Setting up player sprite
-        self.player = self._create_player(self.player_layout, )
+        self.player = self._create_player(self.player_layout, 48, 36)
 
         self.lava = self._create_terrain(self.lava_layout, "lava", 32, 32, self.lava_image)
         
     def run(self):
         self.animated_group.update()
         self.camera_group.custom_draw(self.player)
+        #self.visible_group.draw(self.surface)
         self.player_group.update()
         
     
-    def _create_player(self, layout):
+    def _create_player(self, layout, tile_height, tile_width):
             for row_index, row in enumerate(layout):
                 for col_index, value in enumerate(row):
                     if value != '-1':
                         if value == '0':
-                            y = row_index *tile_size*scaling_factor
-                            x = col_index *tile_size*scaling_factor
-                    
+                            y = row_index *tile_height
+                            x = col_index *tile_width
                             return PlayerAmongUs([self.player_group, self.camera_group], (x,y), self.collision_group)
         
     def _create_terrain(self, layout, type, tile_height, tile_width, image):
             for row_index, row in enumerate(layout):
                     for col_index, value in enumerate(row):
+                        y = row_index *tile_height
+                        x = col_index *tile_width 
                         if value != "-1":
-                            y = row_index *tile_height*scaling_factor
-                            x = col_index *tile_width*scaling_factor
+                            
                             if type == "terrain":
                                 StaticTile([self.visible_group, self.collision_group, self.camera_group], (x, y), image[int(value)])
                                
-                            elif type == "boddies":
+                            if type == "boddies":
                                 StaticTile([self.visible_group,  self.camera_group], (x, y), image[int(value)])
 
-                            elif type == "spikes":
+                            if type == "spikes":
                                 StaticTile([self.visible_group, self.camera_group], (x, y), image[int(value)])
                             
-                            elif type == "volcano":
+                            if type == "volcano":
+
                                 AnimatedTile([self.visible_group, self.camera_group, self.animated_group], (x, y), image)
 
 
-                            elif type == "lava":
+                            if type == "lava":
                                 StaticTile([self.visible_group, self.camera_group], (x, y), image[int(value)])
-
+                        else: continue
 
 
 class MainMenu:

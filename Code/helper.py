@@ -23,7 +23,7 @@ def import_images(path):
 
     for i in range(number_tiles):
         new_image = image.subsurface(pygame.Rect(i*tile_size, 0, tile_size, tile_size))
-        transformed_image = pygame.transform.scale(new_image, (tile_size*scaling_factor, tile_size*scaling_factor))
+        transformed_image = pygame.transform.scale(new_image, (tile_size, tile_size))
         temp_list.append(transformed_image)
 
     return temp_list
@@ -50,7 +50,7 @@ def import_full_sprite_sheet(path):
 
     return temp_list
 
-def import_complicated_full_sprite_sheet(path, tile_width, tile_height, scaling_factor, colour_key):
+def import_complicated_full_sprite_sheet(path, tile_width, tile_height, colour_key):
     temp_list = []
     image = pygame.image.load(path).convert()
     
@@ -63,9 +63,12 @@ def import_complicated_full_sprite_sheet(path, tile_width, tile_height, scaling_
     rows = image_height // tile_height
     cols = image_width // tile_width
 
-    for i in range(cols):
-        for j in range(rows):
-            new_image = image.subsurface(pygame.Rect(i*tile_width, j*tile_height, tile_width, tile_height))
+    for i in range(rows):
+        for j in range(cols):
+            
+            left = i*tile_height
+            top = j *tile_width
+            new_image = image.subsurface(pygame.Rect(top, left, tile_width, tile_height))
             temp_list.append(new_image)
 
     return temp_list

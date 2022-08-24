@@ -5,9 +5,8 @@ tile_h_number = 20
 #Tile_h_number = 120
 
 
-screen_width = 1300
-scaling_factor = 1.2
-screen_height = tile_size * tile_h_number*scaling_factor
+screen_width = 600
+screen_height = 400
 screen = (screen_width, screen_height)
 
 FPS = 60

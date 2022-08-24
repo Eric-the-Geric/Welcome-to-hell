@@ -49,6 +49,7 @@ class StaticTile(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = image
         self.rect = self.image.get_rect(topleft = pos)
+        
 
 class AnimatedTile(pygame.sprite.Sprite):
     def __init__(self, group, pos, image):
@@ -58,7 +59,7 @@ class AnimatedTile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
         self.frames = 0
         self.modded = len(self.image_list)
-        self.animation_speed = 0.1
+        self.animation_speed = 0.05
     def animate(self):
         self.image = self.image_list[(int(self.frames) + self.modded) % self.modded]
         self.frames += self.animation_speed

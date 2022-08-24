@@ -33,7 +33,7 @@ def main():
     menu = MainMenu()
     
     # Initialize level
-    level0 = Level_0()
+    #level0 = Level_0()
     level1 = Level_1()
 
     # Initialize level selector

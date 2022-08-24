@@ -141,9 +141,9 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         self.max_jumps = 1
         # Player graphics
 
-        self.idle = import_complicated_full_sprite_sheet("Graphics2/idle.png", 36, 48, scaling_factor, (255,127,39))
-        self.walking_right = import_complicated_full_sprite_sheet("Graphics2/walking.png", 36, 48, scaling_factor, (255,127,39))
-        self.jumping = import_complicated_full_sprite_sheet("Graphics2/jumping.png", 36, 48, scaling_factor, (255,127,39))
+        self.idle = import_complicated_full_sprite_sheet("Graphics2/idle.png", 36, 48, (255,127,39))
+        self.walking_right = import_complicated_full_sprite_sheet("Graphics2/walking.png", 36, 48, (255,127,39))
+        self.jumping = import_complicated_full_sprite_sheet("Graphics2/jumping.png", 36, 48, (255,127,39))
 
         # Player properties (rects etc)
 
