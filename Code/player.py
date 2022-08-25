@@ -118,22 +118,18 @@ class Player(pygame.sprite.Sprite):
                 if self.direction.y < 0:
                     self.rect.top = sprite.rect.bottom
                     self.direction.y = 0
-    def kill_player(self, harmful_group):
-        for sprite in harmful_group.sprites():
-            if sprite.rect.colliderect(self.rect):
-                self.rect.topleft = (12*32, 200)
 
-    def update(self, harmful_group):
+    def update(self):
         self.get_input()
         self.move()
         self.horizontal_collision()
         self.apply_gravity()
         self.vertical_collision()
         self.animate()
-        self.kill_player(harmful_group)
+        
         
 class PlayerAmongUs(pygame.sprite.Sprite):
-    def __init__(self, group, pos, collision_group):
+    def __init__(self, group, pos, collision_group, harmful_group):
         super().__init__(group)
         
         #Player movement variables
@@ -156,8 +152,9 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         self.image = self.idle[0]
         self.rect = self.image.get_rect(topleft=pos)
 
-        # Collision group
+        # Collision group & harmful_group
         self.collision_group = collision_group
+        self.harmful_group = harmful_group
 
         # Animations
 
@@ -239,6 +236,10 @@ class PlayerAmongUs(pygame.sprite.Sprite):
                 if self.direction.y < 0:
                     self.rect.top = sprite.rect.bottom
                     self.direction.y = 0
+    def kill_player(self):
+        for sprite in self.harmful_group.sprites():
+            if sprite.rect.colliderect(self.rect):
+                self.rect.topleft = (12*32, 200)
 
     def update(self):
         self.get_input()
@@ -247,4 +248,4 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         self.apply_gravity()
         self.vertical_collision()
         self.animate()
-        
+        self.kill_player()

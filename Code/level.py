@@ -145,22 +145,22 @@ class Level_1:
         self.volcano =  self._create_terrain(self.volcano_layout, "volcano", 32, 32, self.volcano_image)
         
         self.terrain = self._create_terrain(self.terrain_layout, "terrain", 32, 32, self.terrain_image)
-        
-        
 
         self.boddies =  self._create_terrain(self.boddies_layout, "boddies", 32, 32, self.boddies_image)
         
-
         # Setting up player sprite
         self.player = self._create_player(self.player_layout, 48, 36)
 
+        # Lava later so it renders over the player
         self.lava = self._create_terrain(self.lava_layout, "lava", 32, 32, self.lava_image)
+
+        
         
     def run(self):
         self.animated_group.update()
         self.camera_group.custom_draw(self.player)
         #self.visible_group.draw(self.surface)
-        self.player_group.update(self.harmful_group)
+        self.player_group.update()
         
     
     def _create_player(self, layout, tile_height, tile_width):
@@ -170,7 +170,7 @@ class Level_1:
                         if value == '0':
                             y = row_index *tile_height
                             x = col_index *tile_width
-                            return PlayerAmongUs([self.player_group, self.camera_group], (x, y), self.collision_group)
+                            return PlayerAmongUs([self.player_group, self.camera_group], (x, y), self.collision_group, self.harmful_group)
         
     def _create_terrain(self, layout, type, tile_height, tile_width, image):
             for row_index, row in enumerate(layout):
@@ -186,11 +186,11 @@ class Level_1:
                                 StaticTile([self.visible_group,  self.camera_group], (x, y), image[int(value)])
 
                             if type == "spikes":
-                                StaticTile([self.visible_group, self.camera_group], (x, y), image[int(value)])
+                                StaticTile([self.visible_group, self.camera_group, self.harmful_group], (x, y), image[int(value)])
                             
                             if type == "volcano":
 
-                                AnimatedTile([self.visible_group, self.camera_group, self.animated_group], (x, y), image)
+                                AnimatedTile([self.visible_group, self.camera_group, self.animated_group, self.harmful_group], (x, y), image)
 
 
                             if type == "lava":
