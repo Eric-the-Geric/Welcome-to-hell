@@ -239,7 +239,7 @@ class PlayerAmongUs(pygame.sprite.Sprite):
     def kill_player(self):
         for sprite in self.harmful_group.sprites():
             if sprite.rect.colliderect(self.rect):
-                self.rect.topleft = (12*32, 200)
+                self.rect.topleft = (12*32, 1300)
 
     def update(self):
         self.get_input()
@@ -247,5 +247,6 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         self.horizontal_collision()
         self.apply_gravity()
         self.vertical_collision()
+        # add the opposite direction animations
         self.animate()
         self.kill_player()

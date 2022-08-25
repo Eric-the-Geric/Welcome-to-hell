@@ -101,7 +101,9 @@ class Level_0:
                             x = col_index *tile_size
                             if value == "1":
                                 Stars([self.visible_group, self.camera_group], (x, y))
-
+# Finish the level
+# add Enemies
+# add sounds
 class Level_1:
 
     def __init__(self):

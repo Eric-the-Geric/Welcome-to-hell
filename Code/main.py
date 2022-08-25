@@ -1,14 +1,14 @@
 
 #################################################################
 # Idea's for the game:
-# Figure out what the main mechanic should be
 # add death counter
-# Change all the graphics xD
-# make a level selector
-# Make some more levels
 # Add particles
 # Add sounds
-# add enemies
+# add enemies (electrical enemy)
+# Add secret easter egg which will just be me saying there is no easter egg (to the left of the level)
+# finish the actual level
+# Make this main file into a class with the different game loops
+# add some kind of ending I guess
 #################################################################
 
 
