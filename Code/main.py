@@ -9,6 +9,7 @@
 # finish the actual level
 # Make this main file into a class with the different game loops
 # add some kind of ending I guess
+# add death counter
 #################################################################
 
 
