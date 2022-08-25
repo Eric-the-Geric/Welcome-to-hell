@@ -192,9 +192,8 @@ class Level_1:
 
                                 AnimatedTile([self.visible_group, self.camera_group, self.animated_group, self.harmful_group], (x, y), image)
 
-
                             if type == "lava":
-                                 AnimatedTile([self.visible_group, self.camera_group, self.animated_group, self.harmful_group], (x, y), image)
+                                AnimatedTile([self.visible_group, self.camera_group, self.animated_group, self.harmful_group], (x, y), image)
                         
 
 
