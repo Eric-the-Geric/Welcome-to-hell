@@ -1,7 +1,7 @@
 import pygame
 from settings import *
 from helper import *
-
+import random
 class Tile(pygame.sprite.Sprite):
     def __init__(self, group):
         super().__init__(group)
@@ -57,9 +57,9 @@ class AnimatedTile(pygame.sprite.Sprite):
         self.image_list = image
         self.image = self.image_list[0]
         self.rect = self.image.get_rect(topleft = pos)
-        self.frames = 0
+        self.frames = random.randint(0,3)
         self.modded = len(self.image_list)
-        self.animation_speed = 0.05
+        self.animation_speed = (random.randint(0,5))/100
     def animate(self):
         self.image = self.image_list[(int(self.frames) + self.modded) % self.modded]
         self.frames += self.animation_speed

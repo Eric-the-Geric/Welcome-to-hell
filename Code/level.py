@@ -114,6 +114,7 @@ class Level_1:
         self.collision_group = pygame.sprite.Group()
         self.animated_group = pygame.sprite.Group()
         self.camera_group = Camera()
+        self.harmful_group = pygame.sprite.Group()
 
         # Getting the layout data
         self.player_layout = import_map_data(Level_2["Player"])
@@ -159,7 +160,7 @@ class Level_1:
         self.animated_group.update()
         self.camera_group.custom_draw(self.player)
         #self.visible_group.draw(self.surface)
-        self.player_group.update()
+        self.player_group.update(self.harmful_group)
         
     
     def _create_player(self, layout, tile_height, tile_width):
@@ -169,7 +170,7 @@ class Level_1:
                         if value == '0':
                             y = row_index *tile_height
                             x = col_index *tile_width
-                            return PlayerAmongUs([self.player_group, self.camera_group], (x,y), self.collision_group)
+                            return PlayerAmongUs([self.player_group, self.camera_group], (x, y), self.collision_group)
         
     def _create_terrain(self, layout, type, tile_height, tile_width, image):
             for row_index, row in enumerate(layout):
@@ -193,8 +194,8 @@ class Level_1:
 
 
                             if type == "lava":
-                                StaticTile([self.visible_group, self.camera_group], (x, y), image[int(value)])
-                        else: continue
+                                 AnimatedTile([self.visible_group, self.camera_group, self.animated_group, self.harmful_group], (x, y), image)
+                        
 
 
 class MainMenu:
