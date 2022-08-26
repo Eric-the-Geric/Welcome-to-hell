@@ -1,6 +1,6 @@
 
 #################################################################
-# Idea's for the game:
+#
 # add death counter
 # Add particles
 # Add sounds
@@ -10,6 +10,7 @@
 # Make this main file into a class with the different game loops
 # add some kind of ending I guess
 # add death counter
+# add shuttle that will launch to space
 #################################################################
 
 
@@ -17,6 +18,7 @@ import pygame, sys
 from settings import *
 from helper import *
 from level import Level_0, MainMenu, Level_selector, Level_1
+
 
 def main():
     # Initialize pygame
@@ -39,14 +41,22 @@ def main():
 
     # Initialize level selector
     level_selector = Level_selector()
+    background1 = pygame.image.load("Graphics2/BackgroundL1.png")
+    background2 = pygame.image.load("Graphics2/BackgroundL2.png").convert()
+    background2.set_colorkey((255,127,39))
+
 
     game_state = "main_menu"
     while run:
         surface.fill('black')
         
+        surface.blit(background1, (0,0))
+        surface.blit(background2, (0,0))
+        
         if game_state == "level_1":
             # level0.run()
             level1.run()
+            #game_state = level1.check_game_state()
 
         elif game_state == "main_menu":
             menu.run()

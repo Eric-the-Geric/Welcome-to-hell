@@ -11,7 +11,10 @@ Level_2 = {"Boddies": "Map2/among us_Dead.csv",
             "Lava": "Map2/among us_Lava.csv",
             "Player": "Map2/among us_Player.csv",
             "Spikes": "Map2/among us_spikes.csv",
-            "Volcano": "Map2/among us_Volcano.csv"}
+            "Volcano": "Map2/among us_Volcano.csv",
+            "Masks": "Map2/among us_mask.csv",
+            "Meteor": "Map2/among us_Meteor.csv",
+            "Enemy_wires": "Map2/among us_enemy_wires.csv"}
 
 # Level_2 = {"Boddies": "MapTest/Test_Dead.csv",
 #             "Terrain": "MapTest/Test_ground.csv",

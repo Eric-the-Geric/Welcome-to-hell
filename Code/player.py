@@ -132,6 +132,10 @@ class PlayerAmongUs(pygame.sprite.Sprite):
     def __init__(self, group, pos, collision_group, harmful_group):
         super().__init__(group)
         
+        self.surface = pygame.display.get_surface()
+
+
+        self.offset = pygame.math.Vector2()
         #Player movement variables
 
         self.pos = pos
@@ -141,6 +145,7 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         self.jump_height = -3
         self.jumps = 0
         self.max_jumps = 1
+        self.death_counter = -1
         # Player graphics
 
         self.idle = import_complicated_full_sprite_sheet("Graphics2/idle.png", 36, 48, (255,127,39))
@@ -167,7 +172,8 @@ class PlayerAmongUs(pygame.sprite.Sprite):
 
         keys = pygame.key.get_pressed()
         self.frames += self.frame_speed
-
+        if keys[pygame.K_ESCAPE]:
+            self.pause = True
         # Horizontal
 
         if keys[pygame.K_a]:
@@ -246,11 +252,24 @@ class PlayerAmongUs(pygame.sprite.Sprite):
                     self.rect.top = sprite.rect.bottom
                     self.direction.y = 0
     def kill_player(self):
+        if self.rect.y > 10000:
+            self.rect.topleft = (12*32, 1300)
+            self.death_counter += 1
         for sprite in self.harmful_group.sprites():
             if sprite.rect.colliderect(self.rect):
                 self.rect.topleft = (12*32, 1300)
+                self.death_counter += 1
+    def death_score(self):
+        font = pygame.font.Font(None, 45)
+        text = font.render("DEATHS: " + str(self.death_counter), True, ('white'))
+        textRect = text.get_rect()
+        self.offset.x += (self.rect.centerx+540 - self.offset.x - (screen_width//2))
+        self.offset.y += (self.rect.centery+300 - self.offset.y - (screen_height//2))
+        textRect.center = (self.rect.topleft - self.offset)
+        self.surface.blit(text, textRect)
 
     def update(self):
+        self.death_score()
         self.get_input()
         self.move()
         self.horizontal_collision()
@@ -259,3 +278,4 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         # add the opposite direction animations
         self.animate()
         self.kill_player()
+        
