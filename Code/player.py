@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_a]:
             self.direction.x = -1
             self.action = "left"
-            self.frames += 0.1
+            self.frames += self.frame_speed
         elif keys[pygame.K_d]:
             self.direction.x = 1
             self.action = "right"
@@ -159,24 +159,26 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         # Animations
 
         self.frames = 0
-        self.action = "idle"
+        self.action = "right"
+        self.frame_speed = 0.1
+        
 
     def get_input(self):
 
         keys = pygame.key.get_pressed()
+        self.frames += self.frame_speed
 
         # Horizontal
+
         if keys[pygame.K_a]:
             self.direction.x = -1
             self.action = "left"
-            self.frames += 0.1
+            
         elif keys[pygame.K_d]:
             self.direction.x = 1
             self.action = "right"
-            self.frames += 0.1
         else:
             self.direction.x = 0
-            self.action = "idle"
 
         # Jump
         for event in pygame.event.get():
@@ -185,7 +187,7 @@ class PlayerAmongUs(pygame.sprite.Sprite):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w and self.jumps < self.max_jumps:
                     self.direction.y = self.jump_height
-                    self.action = "jump"
+                    #self.action = "jump"
                     self.image = self.jumping[0]
                     self.jumps += 1
 
@@ -196,17 +198,24 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         self.rect.center += self.direction*self.speed
 
     def animate(self):
-        if self.direction.y > 0.5:
+        if self.direction.y > 0.5 and self.action == "right":
             self.image = self.jumping[2]
 
-        elif self.action == "idle":
-            self.image = self.idle[int(self.frames) % 2]
-            self.frames += 0.1
+        elif self.direction.y > 0.5 and self.action == "left":
+            self.image = pygame.transform.flip(self.jumping[2], True, False)
 
-        elif self.action == "right":
+        elif self.direction.x == 0 and self.action == "right":
+            self.image = self.idle[int(self.frames) % 2]
+            self.frames += self.frame_speed
+        
+        elif self.direction.x == 0 and self.action == "left":
+            self.image = pygame.transform.flip(self.idle[int(self.frames) % 2], True, False)
+            self.frames += self.frame_speed
+
+        elif self.direction.x > 0 and self.action == "right":
             self.image = self.walking_right[int(self.frames)%3]
 
-        elif self.action == "left":
+        elif self.direction.x < 0 and self.action == "left":
             self.image = pygame.transform.flip(self.walking_right[int(self.frames)%3], True, False)
 
     def apply_gravity(self):

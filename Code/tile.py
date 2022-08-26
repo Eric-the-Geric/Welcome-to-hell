@@ -59,7 +59,7 @@ class AnimatedTile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
         self.frames = random.randint(0,3)
         self.modded = len(self.image_list)
-        self.animation_speed = (random.randint(0,5))/100
+        self.animation_speed = (random.randint(0,10))/100
     def animate(self):
         self.image = self.image_list[(int(self.frames) + self.modded) % self.modded]
         self.frames += self.animation_speed
