@@ -13,7 +13,7 @@
 import pygame, sys
 from settings import *
 from helper import *
-from level import Level_0, MainMenu, Level_selector, Level_1
+from level import MainMenu, Level_1
 
 def display_fps(clock, level1, offset, surface, font):
         text = font.render("FPS: " + str(int(clock.get_fps())), True, ("white"))
@@ -26,12 +26,10 @@ def display_fps(clock, level1, offset, surface, font):
 def main():
     # Initialize pygame
     pygame.init()
-    pygame.mixer.init()
     # Constant variables
     surface = pygame.display.set_mode(screen)
     pygame.display.set_caption('Kinda sus')
     clock = pygame.time.Clock()
-
     #Boolean for while loop
     run = True
 
@@ -39,11 +37,7 @@ def main():
     menu = MainMenu()
     
     # Initialize level
-    #level0 = Level_0()
     level1 = Level_1()
-
-    # Initialize level selector
-    level_selector = Level_selector()
     bg1 = pygame.image.load("Graphics2/BackgroundL1.png").convert()
     bg2 = pygame.image.load("Graphics2/BackgroundL2.png").convert()
     bg1.set_colorkey((255,127,39))
@@ -71,18 +65,13 @@ def main():
         
         
         if game_state == "level_1":
-            # level0.run()
+            
             level1.run(events)
             #game_state = level1.check_game_state()
 
         elif game_state == "main_menu":
             menu.run()
-
             game_state = menu.check_game_state()
-
-        elif game_state == "level_selection":
-            level_selector.run()
-            game_state = level_selector.check_game_state()
 
         for event in events:
             if event.type == pygame.QUIT:

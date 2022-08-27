@@ -3,105 +3,10 @@ from helper import *
 from settings import *
 from level_data import *
 from tile import *
-from player import Player, PlayerAmongUs
+from player import PlayerAmongUs
 from camera import *
 from button import *
 import random
-
-
-class Level_0:
-    
-    def __init__(self):
-        # Get the surface
-        self.surface = pygame.display.get_surface()
-
-        # Setting up sprite groups
-        self.player_group = pygame.sprite.GroupSingle()
-        self.visible_group = pygame.sprite.Group()
-        self.collision_group = pygame.sprite.Group()
-        self.camera_group = Camera()
-
-        self.Level_1 = {"Background": "Map/Level_1_Background.csv",
-            "Clouds": "Map/Level_1_Clouds.csv",
-            "Player": "Map/Level_1_Player.csv",
-            "Stars": "Map/Level_1_Stars.csv",
-            "Terrain": "Map/Level_1_Terrain.csv"}
-        
-        # Getting the layout data
-        self.player_layout = import_map_data(self.Level_1["Player"])
-        self.cloud_layout = import_map_data(self.Level_1["Clouds"])
-        self.terrain_layout = import_map_data(self.Level_1["Terrain"])
-        self.stars_layout = import_map_data(self.Level_1["Stars"])
-        self.background_layout = import_map_data(self.Level_1["Background"])
-
-        
-        # Setting up map sprites
-        self.background = self._create_terrain(self.background_layout, "background")
-        self.stars = self._create_terrain(self.stars_layout, "star")
-        self.clouds = self._create_terrain(self.cloud_layout, "cloud")
-        self.terrain = self._create_terrain(self.terrain_layout, "terrain")
-
-        # Setting up player sprite
-        self.player = self._create_player(self.player_layout)
-        
-    def run(self):
-        self.camera_group.custom_draw(self.player)
-        self.player_group.update()
-        if self.player.rect.centery > screen_height*2:
-            self.player.rect.topleft = (10*tile_size, 11*tile_size)
-            
-    
-    def _create_player(self, layout):
-            for row_index, row in enumerate(layout):
-                for col_index, value in enumerate(row):
-                    if value != '-1':
-                        if value == '0':
-                            y = row_index *tile_size
-                            x = col_index *tile_size
-                    
-                            return Player([self.player_group, self.camera_group], (x,y), self.collision_group)
-        
-    def _create_terrain(self, layout, type):
-        if type == "background":
-            for row_index, row in enumerate(layout):
-                    for col_index, value in enumerate(row):
-                        if value != "-1":
-                            y = row_index *tile_size
-                            x = col_index *tile_size
-                            if value == "0":
-                                Background([self.visible_group, self.camera_group], (x, y))
-        if type == "terrain":
-            for row_index, row in enumerate(layout):
-                    for col_index, value in enumerate(row):
-                        if value != "-1":
-                            y = row_index *tile_size
-                            x = col_index *tile_size
-                            
-                            if value == "3":
-                                TerrainTile2([self.visible_group, self.collision_group, self.camera_group], (x, y))
-
-                            elif value == "2":
-
-                                TerrainTile1([self.visible_group, self.collision_group, self.camera_group], (x, y))
-        if type == "cloud":
-            for row_index, row in enumerate(layout):
-                    for col_index, value in enumerate(row):
-                        if value != "-1":
-                            y = row_index *tile_size
-                            x = col_index *tile_size
-                            if value == "4":
-                                Clouds1([self.visible_group, self.camera_group, self.collision_group], (x, y))
-                            elif value == "5":
-                                Clouds2([self.visible_group, self.camera_group, self.collision_group], (x, y))
-        if type == "star":
-            for row_index, row in enumerate(layout):
-                    for col_index, value in enumerate(row):
-                        if value != "-1":
-                            y = row_index *tile_size
-                            x = col_index *tile_size
-                            if value == "1":
-                                Stars([self.visible_group, self.camera_group], (x, y))
-
 
 # Finish the level
 # add Enemies
@@ -112,7 +17,6 @@ class Level_1:
         # Get the surface
         self.surface = pygame.display.get_surface()
 
-    
         # Setting up sprite groups
         self.player_group = pygame.sprite.GroupSingle()
         self.visible_group = pygame.sprite.Group()
@@ -156,10 +60,11 @@ class Level_1:
                                                             32, 32, (255,127,39))
         self.ship_image = import_complicated_full_sprite_sheet("Graphics2/space_ship.png",
                                                             221, 137, (255,127,39))
-        # Setting up map sprites
+       
 
-        # Setting up player sprite
+        # Setting up sprites
         self.space_ship = self._create_terrain(self.space_ship_layout, "ship", tile_size, tile_size, self.ship_image)
+        
         self.player = self._create_player(self.player_layout, 48, 36)
         
         self.spikes =  self._create_terrain(self.spikes_layout, "spikes", tile_size, tile_size, self.spikes_image)
@@ -173,16 +78,16 @@ class Level_1:
         self.masks =  self._create_terrain(self.mask_layout, "masks", tile_size, tile_size, self.mask_image)
         
         
-        
-        
 
         # Lava and meteor later so it renders over the player
         self.enemy_wires = self._create_terrain(self.enemy_wires_layout, "wires", tile_size, tile_size, self.enemy_wires_image)
         self.lava = self._create_terrain(self.lava_layout, "lava", tile_size, tile_size, self.lava_image)
         
         self.font = pygame.font.Font(None, 32)
+    
 
     def run(self, event_list):
+
         number = 1
         pos = (0,0)
         if self.player.rect.centery < 30*tile_size:
@@ -249,39 +154,21 @@ class Level_1:
 
 class MainMenu:
     def __init__(self):
+       
         self.surface = pygame.display.get_surface()
         self.image = pygame.image.load("Graphics/menu.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, screen)
         self.rect = self.image.get_rect(topleft = (0,0))
         self.start_button = Button("Graphics/start_button.png", (500, screen_height//1.5))
-        self.level_button = Button("Graphics/levels.png", (500, screen_height//2))
+        self.sound = pygame.mixer.Sound("Sounds/instructions and intro.wav")
     def run(self):
+        
         self.surface.fill("black")
         self.surface.blit(self.image, (0,0))
         self.start_button.draw()
-        self.level_button.draw()
-        
-        
+ 
 
     def check_game_state(self):
         if self.start_button.clicked:
             return "level_1"
-        elif self.level_button.clicked:
-            return "level_selection"
         else: return "main_menu"
-
-class Level_selector:
-    def __init__(self):
-        self.surface = pygame.display.get_surface()
-        self.start_button = Button("Graphics/Level_0.png", (1000, 250))
-        
-    def run(self):
-        self.surface.fill("black")
-        
-        self.start_button.draw()
-    
-    def check_game_state(self):
-        if self.start_button.clicked:
-            return "level_1"
-        
-        else: return "level_selection"
