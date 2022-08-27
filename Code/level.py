@@ -122,6 +122,8 @@ class Level_1:
         self.camera_group = Camera()
         self.harmful_group = pygame.sprite.Group()
         self.enemy_wires_group = pygame.sprite.Group()
+        self.ship_group = pygame.sprite.Group()
+
 
         # Getting the layout data
         self.player_layout = import_map_data(Level_2["Player"])
@@ -132,7 +134,7 @@ class Level_1:
         self.boddies_layout = import_map_data(Level_2["Boddies"])
         self.mask_layout = import_map_data(Level_2["Masks"])
         self.enemy_wires_layout = import_map_data(Level_2["Enemy_wires"])
-
+        self.space_ship_layout = import_map_data(Level_2["Space_ship"])
 
 
         # Setting up images   
@@ -152,10 +154,12 @@ class Level_1:
                                                             134, 187, (255,127,39))
         self.enemy_wires_image = import_complicated_full_sprite_sheet("Graphics2/wires_enemy.png",
                                                             32, 32, (255,127,39))
-                                    
+        self.ship_image = import_complicated_full_sprite_sheet("Graphics2/space_ship.png",
+                                                            221, 137, (255,127,39))
         # Setting up map sprites
 
         # Setting up player sprite
+        self.space_ship = self._create_terrain(self.space_ship_layout, "ship", tile_size, tile_size, self.ship_image)
         self.player = self._create_player(self.player_layout, 48, 36)
         
         self.spikes =  self._create_terrain(self.spikes_layout, "spikes", tile_size, tile_size, self.spikes_image)
@@ -208,7 +212,7 @@ class Level_1:
                         if value == '0':
                             y = row_index *tile_height
                             x = col_index *tile_width
-                            return PlayerAmongUs([self.player_group, self.camera_group], (x, y), self.collision_group, self.harmful_group)
+                            return PlayerAmongUs([self.player_group, self.camera_group], (x, y), self.collision_group, self.harmful_group, self.ship_group)
         
     def _create_terrain(self, layout, type, tile_height, tile_width, image):
             for row_index, row in enumerate(layout):
@@ -239,7 +243,8 @@ class Level_1:
                             if type == "wires":
                                 WireEnemy([self.camera_group, self.enemy_wires_group], (x,y), image, self.player, self.camera_group, self.harmful_group)
 
-    
+                            if type == "ship":
+                                StaticTile([self.camera_group, self.ship_group], (x, y), image[int(value)])
 
 
 class MainMenu:
