@@ -23,7 +23,7 @@ class Camera(pygame.sprite.Group):
         #self.focus_target(target)
         self.cool_camera(target)
         for sprite in self.sprites():
-            offset_pos = (sprite.rect.topleft - self.offset)
+            offset_pos = (sprite.rect.topleft - self.offset)/1
             self.surface.blit(sprite.image, offset_pos)
 
             

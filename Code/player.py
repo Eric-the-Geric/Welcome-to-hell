@@ -134,17 +134,20 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         
         self.surface = pygame.display.get_surface()
 
-
+        #death counter
         self.offset = pygame.math.Vector2()
+
+        #FPS counter
+        self.offset2 = pygame.math.Vector2()
         #Player movement variables
 
         self.pos = pos
         self.direction = pygame.math.Vector2()
-        self.speed = 7
-        self.gravity = 0.2
+        self.speed = 5
+        self.gravity = 0.15
         self.jump_height = -3
         self.jumps = 0
-        self.max_jumps = 1
+        self.max_jumps = 2
         self.death_counter = -1
         # Player graphics
 
@@ -191,7 +194,7 @@ class PlayerAmongUs(pygame.sprite.Sprite):
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w and self.jumps < self.max_jumps:
+                if event.key == pygame.K_SPACE and self.jumps < self.max_jumps:
                     self.direction.y = self.jump_height
                     #self.action = "jump"
                     self.image = self.jumping[0]
@@ -212,11 +215,11 @@ class PlayerAmongUs(pygame.sprite.Sprite):
 
         elif self.direction.x == 0 and self.action == "right":
             self.image = self.idle[int(self.frames) % 2]
-            self.frames += self.frame_speed
+            #self.frames += self.frame_speed
         
         elif self.direction.x == 0 and self.action == "left":
             self.image = pygame.transform.flip(self.idle[int(self.frames) % 2], True, False)
-            self.frames += self.frame_speed
+            #self.frames += self.frame_speed
 
         elif self.direction.x > 0 and self.action == "right":
             self.image = self.walking_right[int(self.frames)%3]
@@ -233,12 +236,10 @@ class PlayerAmongUs(pygame.sprite.Sprite):
                 if self.direction.x < 0 and abs(self.rect.left - sprite.rect.right) < 10:
                     self.rect.left = sprite.rect.right
                     # self.direction.y -= 0.07
-                    self.max_jumps = 2
 
                 if self.direction.x > 0 and abs(self.rect.right - sprite.rect.left) < 10:
                     self.rect.right = sprite.rect.left
                     # self.direction.y -= 0.07
-                    self.max_jumps = 2
 
     def vertical_collision(self):
         for sprite in self.collision_group.sprites():
@@ -247,7 +248,6 @@ class PlayerAmongUs(pygame.sprite.Sprite):
                     self.rect.bottom = sprite.rect.top
                     self.direction.y = 0
                     self.jumps = 0
-                    self.max_jumps = 1
                 if self.direction.y < 0:
                     self.rect.top = sprite.rect.bottom
                     self.direction.y = 0
@@ -275,6 +275,7 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         self.horizontal_collision()
         self.apply_gravity()
         self.vertical_collision()
+
         # add the opposite direction animations
         self.animate()
         self.kill_player()

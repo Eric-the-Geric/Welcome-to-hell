@@ -153,6 +153,9 @@ class Level_1:
                                                             32, 32, (255,127,39))
                                     
         # Setting up map sprites
+
+        # Setting up player sprite
+        self.player = self._create_player(self.player_layout, 48, 36)
         
         self.spikes =  self._create_terrain(self.spikes_layout, "spikes", tile_size, tile_size, self.spikes_image)
         
@@ -166,8 +169,7 @@ class Level_1:
         
         
         
-        # Setting up player sprite
-        self.player = self._create_player(self.player_layout, 48, 36)
+        
 
         # Lava and meteor later so it renders over the player
         self.enemy_wires = self._create_terrain(self.enemy_wires_layout, "wires", tile_size, tile_size, self.enemy_wires_image)
@@ -192,16 +194,11 @@ class Level_1:
         self.camera_group.custom_draw(self.player)
         self.player_group.update()
         self.enemy_wires_group.update(self.player.rect.center)
-        for sprite in self.meteor_group:
-            if sprite.rect.centery > 2700:
-                self.meteor_group.remove(sprite)
-                self.camera_group.remove(sprite)
-                self.harmful_group.remove(sprite)
         
         
     def _create_meteor(self, number, pos):
         if number == 4:
-            Meteor([self.camera_group, self.meteor_group, self.harmful_group], pos, self.meteor_image, self.collision_group)
+            Meteor([self.camera_group, self.meteor_group, self.harmful_group], pos, self.meteor_image, self.collision_group, self.player)
 
     def _create_player(self, layout, tile_height, tile_width):
             for row_index, row in enumerate(layout):
@@ -230,16 +227,16 @@ class Level_1:
                             
                             if type == "volcano":
 
-                                AnimatedTile([self.camera_group, self.animated_group, self.harmful_group], (x, y), image)
+                                AnimatedTile([self.camera_group, self.animated_group, self.harmful_group], (x, y), image, self.player)
 
                             if type == "lava":
-                                AnimatedTile([self.camera_group, self.animated_group, self.harmful_group], (x, y), image)
+                                AnimatedTile([self.camera_group, self.animated_group, self.harmful_group], (x, y), image, self.player)
 
                             if type == "masks":
                                 StaticTile([ self.camera_group], (x, y), image[int(value)])
                             
                             if type == "wires":
-                                WireEnemy([self.camera_group, self.enemy_wires_group], (x,y), image, self.player)
+                                WireEnemy([self.camera_group, self.enemy_wires_group], (x,y), image, self.player, self.camera_group, self.harmful_group)
 
     
 
