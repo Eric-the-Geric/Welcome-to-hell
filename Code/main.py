@@ -1,12 +1,6 @@
 
 #################################################################
-# Add particles
-# Add sounds
-# Add secret easter egg which will just be me saying there is no easter 
-# egg (to the left of the level)
 # Make this main file into a class with the different game loops
-# add some kind of ending I guess
-# add shuttle that will launch to space
 #################################################################
 
 
