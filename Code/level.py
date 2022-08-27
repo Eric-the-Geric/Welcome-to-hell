@@ -112,6 +112,7 @@ class Level_1:
         # Get the surface
         self.surface = pygame.display.get_surface()
 
+    
         # Setting up sprite groups
         self.player_group = pygame.sprite.GroupSingle()
         self.visible_group = pygame.sprite.Group()
@@ -177,22 +178,22 @@ class Level_1:
         
         self.font = pygame.font.Font(None, 32)
 
-    def run(self):
+    def run(self, event_list):
         number = 1
         pos = (0,0)
         if self.player.rect.centery < 30*tile_size:
             number = random.randint(1, 30)
-            pos = (random.randint(30*tile_size, 80*tile_size), 0)
+            pos = (random.randint(32*tile_size, 53*tile_size), 0)
         elif self.player.rect.centery > 55*tile_size:
             number = random.randint(1, 30)
-            pos = (random.randint(30*tile_size, 100*tile_size), 50*tile_size)
+            pos = (random.randint(30*tile_size, 90*tile_size), 50*tile_size)
         
         self._create_meteor(number, pos)
         
         self.animated_group.update()
         self.meteor_group.update()
         self.camera_group.custom_draw(self.player)
-        self.player_group.update()
+        self.player_group.update(event_list)
         self.enemy_wires_group.update(self.player.rect.center)
         
         
@@ -267,7 +268,7 @@ class MainMenu:
 class Level_selector:
     def __init__(self):
         self.surface = pygame.display.get_surface()
-        self.start_button = Button("Graphics/Level_0.png", (400, 250))
+        self.start_button = Button("Graphics/Level_0.png", (1000, 250))
         
     def run(self):
         self.surface.fill("black")

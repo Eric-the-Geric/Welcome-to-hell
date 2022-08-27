@@ -171,7 +171,7 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         self.frame_speed = 0.1
         
 
-    def get_input(self):
+    def get_input(self, events):
 
         keys = pygame.key.get_pressed()
         self.frames += self.frame_speed
@@ -188,17 +188,14 @@ class PlayerAmongUs(pygame.sprite.Sprite):
             self.action = "right"
         else:
             self.direction.x = 0
-
-        # Jump
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and self.jumps < self.max_jumps:
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w and self.jumps < self.max_jumps:
                     self.direction.y = self.jump_height
-                    #self.action = "jump"
                     self.image = self.jumping[0]
                     self.jumps += 1
+
+        
 
 
     def move(self):
@@ -236,10 +233,13 @@ class PlayerAmongUs(pygame.sprite.Sprite):
                 if self.direction.x < 0 and abs(self.rect.left - sprite.rect.right) < 10:
                     self.rect.left = sprite.rect.right
                     # self.direction.y -= 0.07
+                    self.max_jumps = 2
+
 
                 if self.direction.x > 0 and abs(self.rect.right - sprite.rect.left) < 10:
                     self.rect.right = sprite.rect.left
                     # self.direction.y -= 0.07
+                    self.max_jumps = 2
 
     def vertical_collision(self):
         for sprite in self.collision_group.sprites():
@@ -248,9 +248,11 @@ class PlayerAmongUs(pygame.sprite.Sprite):
                     self.rect.bottom = sprite.rect.top
                     self.direction.y = 0
                     self.jumps = 0
+                    self.max_jumps = 2
                 if self.direction.y < 0:
                     self.rect.top = sprite.rect.bottom
                     self.direction.y = 0
+                    
     def kill_player(self):
         if self.rect.y > 10000:
             self.rect.topleft = (12*32, 1300)
@@ -268,9 +270,9 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         textRect.center = (self.rect.topleft - self.offset)
         self.surface.blit(text, textRect)
 
-    def update(self):
+    def update(self, event_list):
         self.death_score()
-        self.get_input()
+        self.get_input(event_list)
         self.move()
         self.horizontal_collision()
         self.apply_gravity()

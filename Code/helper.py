@@ -72,3 +72,20 @@ def import_complicated_full_sprite_sheet(path, tile_width, tile_height, colour_k
             temp_list.append(new_image)
 
     return temp_list
+
+def break_the_image(image, pieces_width, pieces_height):
+    image_width = image.get_width()
+    image_height = image.get_height()
+    rows = image_height // pieces_height
+    cols = image_width // pieces_width
+    temp_list = []
+    
+    for i in range(rows):
+        for j in range(cols):
+            
+            left = i*pieces_height
+            top = j *pieces_width
+            new_image = image.subsurface(pygame.Rect(top, left, pieces_width, pieces_height))
+            temp_list.append(new_image)
+    # print(len(temp_list))
+    return temp_list

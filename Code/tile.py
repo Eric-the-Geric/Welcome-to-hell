@@ -64,7 +64,7 @@ class AnimatedTile(pygame.sprite.Sprite):
         self.modded = len(self.image_list)
         self.animation_speed = (random.randint(0,10))/100
         self.particles = []
-        self.max_particles = 1
+        self.max_particles = 2
 
 
     def get_distance(self):
@@ -74,10 +74,10 @@ class AnimatedTile(pygame.sprite.Sprite):
         if len(self.particles) > 0:
 
             for particle in self.particles:
-                if  pygame.math.Vector2.distance_to(pygame.math.Vector2(self.rect.center), pygame.math.Vector2(particle.rect.center)) > 200:
+                if  pygame.math.Vector2.distance_to(pygame.math.Vector2(self.rect.center), pygame.math.Vector2(particle.rect.center)) > 350:
                     self.particles.remove(particle)
                     particle.kill()
-                if particle.direction.magnitude() < 1:
+                if particle.direction.y == 0:
                     self.particles.remove(particle)
                     particle.kill()
     def animate(self):
@@ -87,7 +87,7 @@ class AnimatedTile(pygame.sprite.Sprite):
     def create_particles(self):
         distance = self.get_distance()
         if  distance < 200 and len(self.particles) < self.max_particles:
-            self.particles.append(Particle(self.rect.center, self.group, "Graphics2/lava particle.png"))
+            self.particles.append(Particle(self.rect.center, self.group, "Graphics2/lava particle.png", 12, 12))
             self.group[2].remove(self.particles[-1])
     
     def update(self):
@@ -105,7 +105,13 @@ class Meteor(AnimatedTile):
         self.direction = pygame.math.Vector2()
         self.collision_group = collision_group
         self.animation_speed = 0.1
-    
+        self.max_particles = 100
+        self.explosion_particles = break_the_image(self.image, 10, 10)
+        self.explosion_sprites = []
+        self.group = group
+        self.surface = pygame.display.get_surface()
+        self.screen_shake_counter = 0
+
     def move(self):
         if self.direction.magnitude() != 0:
             self.direction.normalize()
@@ -118,17 +124,50 @@ class Meteor(AnimatedTile):
     def collision(self):
         for sprite in self.collision_group.sprites():
             if sprite.rect.colliderect(self.rect):
+                if self.get_distance() > 1000:
+                    self.kill()
                 # self.rect.centery = 4000
-                self.kill()
+                self.group[0].remove(self)
+                self.create_particles()
+                self.group[2].remove(self)
+                    
+    def get_distance(self):
+        return pygame.math.Vector2.distance_to(pygame.math.Vector2(self.rect.center), pygame.math.Vector2(self.target.rect.center))
 
+    def create_particles(self):
+        distance = self.get_distance()
+        for i in range(100, 200):
+            if len(self.explosion_sprites) < self.max_particles and distance < 350:
+                self.explosion_sprites.append(((MeteorParticle((self.rect.center), self.group[0], self.explosion_particles, i))))
+                self.group[0].screenshake = True
+                
+
+
+    def destroy_particle(self):
+        if len(self.explosion_sprites) > 0:
+
+            for particle in self.explosion_sprites:
+                if  pygame.math.Vector2.distance_to(pygame.math.Vector2(self.rect.center), pygame.math.Vector2(particle.rect.center)) > 350:
+                    self.explosion_sprites.remove(particle)
+                    particle.kill()
+                if particle.direction.y == 0:
+                    particle.kill()
     def update(self):
-        self.collision()
+        for sprite in self.explosion_sprites:
+            sprite.update()
+        self.destroy_particle()
+        
         self.animate()
         self.gravity()
         self.move()
-        if self.rect.centery > 2700:
+        self.collision()
+        if self.rect.centery > 3000:
             self.kill()
-
+        if self.screen_shake_counter == 5:
+            self.group[0].screenshake = False
+            self.screen_shake_counter = 0
+        if self.group[0].screenshake:
+            self.screen_shake_counter += 1
 class WireEnemy(AnimatedTile):
     def __init__(self, group, pos, image, target, camera_group, harmful_group):
         super().__init__(group, pos, image, target)
@@ -178,7 +217,7 @@ class Bullet(pygame.sprite.Sprite):
         self.image = import_complicated_full_sprite_sheet(path, 9, 14, (255,127,39))[0]
         self.image = pygame.transform.scale(self.image, (20, 20))
         self.rect = self.image.get_rect(topleft = (pos))
-        self.speed = 10
+        self.speed = 5
 
     def shoot(self, direction):
         self.rect.center += direction*self.speed
@@ -188,13 +227,12 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Particle(pygame.sprite.Sprite):
-    def __init__(self, pos, group, path):
+    def __init__(self, pos, group, path, image_width, image_height):
         super().__init__(group)
         self.speed = random.randint(1,4)
         self.direction = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
-        self.image = import_complicated_full_sprite_sheet(path, 12, 12, (255,127,39))[0]
-        # self.image = pygame.transform.scale(self.image, (20, 20))
-        self.rect = self.image.get_rect(topleft = (pos))
+        self.image = import_complicated_full_sprite_sheet(path, image_width, image_height, (255,127,39))[0]
+        self.rect = self.image.get_rect(topleft = pos)
     
     
     def shoot(self):
@@ -202,4 +240,23 @@ class Particle(pygame.sprite.Sprite):
     
     def update(self):
         
+        self.shoot()
+
+class MeteorParticle(pygame.sprite.Sprite):
+    def __init__(self, pos, group, image, frame):
+        super().__init__(group)
+        self.image = image
+        self.pos = pos
+        self.frame = frame
+        self.speed = random.randint(3, 5)
+        
+        self.image = self.image[frame]
+        self.rect = self.image.get_rect(topleft = pos)
+        self.direction = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
+    
+    
+    def shoot(self):       
+        self.rect.center += self.direction*self.speed
+    
+    def update(self):
         self.shoot()

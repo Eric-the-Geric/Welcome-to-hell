@@ -54,7 +54,12 @@ def main():
     font = pygame.font.Font(None, 36)
 
     game_state = "main_menu"
+    
     while run:
+        # WAYYYYYYYY better to get the event list and loop over that list multiple times per frame than call the event listener each time.
+        # It fixed the issue with my jumping
+        events = pygame.event.get()
+
         scroll1[0] =  (level1.player.rect.centerx-5000- scroll1[0])/20
         scroll1[1] =  (level1.player.rect.centery-5000- scroll1[1])/20
         scroll2[0] = (level1.player.rect.centerx-5000- scroll2[0])/200
@@ -67,7 +72,7 @@ def main():
         
         if game_state == "level_1":
             # level0.run()
-            level1.run()
+            level1.run(events)
             #game_state = level1.check_game_state()
 
         elif game_state == "main_menu":
@@ -79,12 +84,17 @@ def main():
             level_selector.run()
             game_state = level_selector.check_game_state()
 
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.QUIT:
                 run = False
+        
+        for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     game_state = "main_menu"
+                    continue
+
+                
         display_fps(clock, level1, offset, surface, font)
         pygame.display.update()
         clock.tick(FPS)
