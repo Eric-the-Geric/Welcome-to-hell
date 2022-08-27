@@ -101,7 +101,7 @@ class AnimatedTile(pygame.sprite.Sprite):
         
 
 class Meteor(AnimatedTile):
-    def __init__(self, group, pos, image, collision_group, target):
+    def __init__(self, group, pos, image, collision_group, target, music_effects):
         super().__init__(group, pos, image, target)
         self.falling_speed = random.randint(4,6)
         self.pos = pos
@@ -114,7 +114,7 @@ class Meteor(AnimatedTile):
         self.group = group
         self.surface = pygame.display.get_surface()
         self.screen_shake_counter = 0
-
+        self.music_effects = music_effects
     def move(self):
         if self.direction.magnitude() != 0:
             self.direction.normalize()
@@ -138,17 +138,21 @@ class Meteor(AnimatedTile):
         return pygame.math.Vector2.distance_to(pygame.math.Vector2(self.rect.center), pygame.math.Vector2(self.target.rect.center))
 
     def create_particles(self):
+        random_number = random.randint(0,10)
         distance = self.get_distance()
         for i in range(100, 200):
             if len(self.explosion_sprites) < self.max_particles and distance < 350:
                 self.explosion_sprites.append(((MeteorParticle((self.rect.center), self.group[0], self.explosion_particles, i))))
                 self.group[0].screenshake = True
+                if random_number <5:
+                    self.music_effects.play_song("meteor")
                 
-
+                    
 
     def destroy_particle(self):
+        
         if len(self.explosion_sprites) > 0:
-
+            self.music_effects.stop_song()
             for particle in self.explosion_sprites:
                 if  pygame.math.Vector2.distance_to(pygame.math.Vector2(self.rect.center), pygame.math.Vector2(particle.rect.center)) > 350:
                     self.explosion_sprites.remove(particle)
@@ -175,7 +179,7 @@ class Meteor(AnimatedTile):
 class WireEnemy(AnimatedTile):
     def __init__(self, group, pos, image, target, camera_group, harmful_group):
         super().__init__(group, pos, image, target, scaled = True)
-        
+
         self.camera_group = camera_group
         self.harmful_group = harmful_group
         self.target = target

@@ -1,6 +1,6 @@
 import pygame
 
-class SoundsEffects:
+class SoundEffects:
     def __init__(self):
         pygame.mixer.init()
         
@@ -22,5 +22,24 @@ class SoundsEffects:
                                  "meteor":self.meteor_sound,
                                  "intro":self.introduction_sound,
                                  "game":self.main_game_sound}
+    
     def fetch_song(self, song_key):
-        return self.sound_dictionary[song_key]
+        sound = self.sound_dictionary[song_key]
+        return sound
+
+
+    def play_song(self, song_key, volume = 0.1, boolean = False):
+
+        sound = self.sound_dictionary[song_key]
+        sound.set_volume(volume)
+        if boolean:
+            sound.play(-1)
+        else:
+            sound.play()
+        return sound
+
+    def stop_song(self):
+        for key in self.sound_dictionary.keys():
+            self.sound_dictionary[key].stop()
+        
+    

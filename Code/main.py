@@ -8,6 +8,7 @@ import pygame, sys
 from settings import *
 from helper import *
 from level import MainMenu, Level_1
+from sound_effects import SoundEffects
 
 def display_fps(clock, level1, offset, surface, font):
         text = font.render("FPS: " + str(int(clock.get_fps())), True, ("white"))
@@ -18,6 +19,7 @@ def display_fps(clock, level1, offset, surface, font):
         surface.blit(text, textRect)
 
 def main():
+    music_box = SoundEffects()
     # Initialize pygame
     pygame.init()
     # Constant variables
@@ -28,10 +30,11 @@ def main():
     run = True
 
     # Initialize main menu
-    menu = MainMenu()
+    
     
     # Initialize level
-    level1 = Level_1()
+    level1 = Level_1(music_box)
+    menu = MainMenu(level1)
     bg1 = pygame.image.load("Graphics2/BackgroundL1.png").convert()
     bg2 = pygame.image.load("Graphics2/BackgroundL2.png").convert()
     bg1.set_colorkey((255,127,39))
@@ -42,7 +45,7 @@ def main():
     font = pygame.font.Font(None, 36)
 
     game_state = "main_menu"
-    
+    music_box.play_song("menu", 0.1)
     while run:
         # WAYYYYYYYY better to get the event list and loop over that list multiple times per frame than call the event listener each time.
         # It fixed the issue with my jumping
@@ -61,12 +64,19 @@ def main():
         if game_state == "level_1":
             
             level1.run(events)
-            #game_state = level1.check_game_state()
+            
 
         elif game_state == "main_menu":
             menu.run()
             game_state = menu.check_game_state()
+            
 
+        elif game_state == "main_menu2":
+            menu.run()
+            game_state = menu.check_game_state()
+
+        elif game_state == "quit":
+            run = False
         for event in events:
             if event.type == pygame.QUIT:
                 run = False
@@ -74,8 +84,9 @@ def main():
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
-                    game_state = "main_menu"
-                    continue
+                    menu.image.set_alpha(50)
+                    game_state = "main_menu2"
+                    
 
                 
         display_fps(clock, level1, offset, surface, font)

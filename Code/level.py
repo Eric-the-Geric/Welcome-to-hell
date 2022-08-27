@@ -7,16 +7,18 @@ from player import PlayerAmongUs
 from camera import *
 from button import *
 import random
-
+from sound_effects import SoundEffects
 # Finish the level
 # add Enemies
 # add sounds
 class Level_1:
 
-    def __init__(self):
+    def __init__(self, music_box):
         # Get the surface
         self.surface = pygame.display.get_surface()
-
+        self.music_box = music_box
+        self.music_effects = SoundEffects()
+        
         # Setting up sprite groups
         self.player_group = pygame.sprite.GroupSingle()
         self.visible_group = pygame.sprite.Group()
@@ -83,11 +85,47 @@ class Level_1:
         self.enemy_wires = self._create_terrain(self.enemy_wires_layout, "wires", tile_size, tile_size, self.enemy_wires_image)
         self.lava = self._create_terrain(self.lava_layout, "lava", tile_size, tile_size, self.lava_image)
         
+
+        
         self.font = pygame.font.Font(None, 32)
-    
+        self.play_intro = True
+        self.play_main_song_loop = True
+        self.easter_egg = True
+        self.ten_deaths = True
+        self.intro_timer = 0
+        self.can_move = False
 
     def run(self, event_list):
+        
+        if self.play_intro:
+            self.music_box.stop_song()
+            self.music_box.play_song("intro", volume = 0.5)
+            self.play_intro = False
+            self.play_main_song_loop = True
+        self.intro_timer += 0.5
 
+        if self.intro_timer > 1320 and self.play_main_song_loop:
+            self.can_move = True
+            self.music_box.stop_song()
+            self.music_box.play_song("game",0.1, True)
+            self.play_main_song_loop = False
+
+        if self.player.rect.centerx < 3*32 and self.easter_egg:
+            self.music_box.stop_song()
+            self.intro_timer = 920
+            self.music_box.play_song("egg")
+            self.play_main_song_loop = True
+            self.easter_egg = False
+
+        if self.player.death_counter == 10 and self.ten_deaths:
+            self.music_box.stop_song()
+            self.intro_timer = 1070
+            self.music_box.play_song("ten")
+            self.play_main_song_loop = True
+            self.ten_deaths = False
+        
+            
+        
         number = 1
         pos = (0,0)
         if self.player.rect.centery < 30*tile_size:
@@ -102,13 +140,13 @@ class Level_1:
         self.animated_group.update()
         self.meteor_group.update()
         self.camera_group.custom_draw(self.player)
-        self.player_group.update(event_list)
+        self.player_group.update(event_list, self.can_move)
         self.enemy_wires_group.update(self.player.rect.center)
         
         
     def _create_meteor(self, number, pos):
         if number == 4:
-            Meteor([self.camera_group, self.meteor_group, self.harmful_group], pos, self.meteor_image, self.collision_group, self.player)
+            Meteor([self.camera_group, self.meteor_group, self.harmful_group], pos, self.meteor_image, self.collision_group, self.player, self.music_effects)
 
     def _create_player(self, layout, tile_height, tile_width):
             for row_index, row in enumerate(layout):
@@ -117,7 +155,7 @@ class Level_1:
                         if value == '0':
                             y = row_index *tile_height
                             x = col_index *tile_width
-                            return PlayerAmongUs([self.player_group, self.camera_group], (x, y), self.collision_group, self.harmful_group, self.ship_group)
+                            return PlayerAmongUs([self.player_group, self.camera_group], (x, y), self.collision_group, self.harmful_group, self.ship_group, self.music_box)
         
     def _create_terrain(self, layout, type, tile_height, tile_width, image):
             for row_index, row in enumerate(layout):
@@ -153,22 +191,35 @@ class Level_1:
 
 
 class MainMenu:
-    def __init__(self):
+    def __init__(self, level):
        
         self.surface = pygame.display.get_surface()
         self.image = pygame.image.load("Graphics/menu.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, screen)
         self.rect = self.image.get_rect(topleft = (0,0))
-        self.start_button = Button("Graphics/start_button.png", (500, screen_height//1.5))
-        self.sound = pygame.mixer.Sound("Sounds/instructions and intro.wav")
+        self.start_button = Button("Graphics/start_button.png", (500, 100))
+        self.mute_button = Button("Graphics/mute_intro.png", (500, 300))
+        self.quit_button = Button("Graphics/quit.png", (500, 500))
+        self.level = level
+
     def run(self):
         
         self.surface.fill("black")
         self.surface.blit(self.image, (0,0))
         self.start_button.draw()
+        self.mute_button.draw()
+        self.quit_button.draw()
  
 
     def check_game_state(self):
         if self.start_button.clicked:
             return "level_1"
+        
+        elif self.mute_button.clicked:
+            self.level.play_intro = False
+            self.level.intro_timer = 1321
+            return "main_menu"
+
+        elif self.quit_button.clicked:
+            return "quit"
         else: return "main_menu"

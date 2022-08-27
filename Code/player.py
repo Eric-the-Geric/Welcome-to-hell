@@ -2,15 +2,16 @@ import pygame
 from settings import *
 from helper import *
 from tile import *
-
+from sound_effects import SoundEffects
 class PlayerAmongUs(pygame.sprite.Sprite):
-    def __init__(self, group, pos, collision_group, harmful_group, ship_group):
+    def __init__(self, group, pos, collision_group, harmful_group, ship_group, music_box):
         super().__init__(group)
-        
-
         self.group = group
         self.surface = pygame.display.get_surface()
-
+        self.music_effects = SoundEffects()
+        self.music_box = music_box
+        self.ending_song = True
+        
         #death counter
         self.offset = pygame.math.Vector2()
 
@@ -58,29 +59,30 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         for i in range(len(self.particle_images)):
             self.particles.append(((MeteorParticle((self.rect.center), self.group[1], self.particle_images, i))))
 
-    def get_input(self, events):
-        if not self.ending:
-            keys = pygame.key.get_pressed()
-            self.frames += self.frame_speed
-            if keys[pygame.K_ESCAPE]:
-                self.pause = True
-            # Horizontal
+    def get_input(self, events, can_move):
+        if can_move:
+            if not self.ending:
+                keys = pygame.key.get_pressed()
+                self.frames += self.frame_speed
+                if keys[pygame.K_ESCAPE]:
+                    self.pause = True
+                # Horizontal
 
-            if keys[pygame.K_a]:
-                self.direction.x = -1
-                self.action = "left"
-                
-            elif keys[pygame.K_d]:
-                self.direction.x = 1
-                self.action = "right"
-            else:
-                self.direction.x = 0
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_w and self.jumps < self.max_jumps:
-                        self.direction.y = self.jump_height
-                        self.image = self.jumping[0]
-                        self.jumps += 1
+                if keys[pygame.K_a]:
+                    self.direction.x = -1
+                    self.action = "left"
+                    
+                elif keys[pygame.K_d]:
+                    self.direction.x = 1
+                    self.action = "right"
+                else:
+                    self.direction.x = 0
+                for event in events:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_w and self.jumps < self.max_jumps:
+                            self.direction.y = self.jump_height
+                            self.image = self.jumping[0]
+                            self.jumps += 1
 
 
     def move(self):
@@ -138,10 +140,12 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         if self.rect.y > 10000:
             self.rect.topleft = (12*32, 1300)
             self.death_counter += 1
+            self.music_effects.play_song("death")
         for sprite in self.harmful_group.sprites():
             if sprite.rect.colliderect(self.rect):
                 self.rect.topleft = (12*32, 1300)
                 self.death_counter += 1
+                self.music_effects.play_song("death")
     def win_level(self):
         for sprite in self.ship_group:
             if sprite.rect.colliderect(self.rect):
@@ -150,6 +154,10 @@ class PlayerAmongUs(pygame.sprite.Sprite):
                 self.you_won()
                 
     def you_won(self):
+        if self.ending and self.ending_song:
+            self.music_box.stop_song
+            self.music_box.play_song("end", 0.5)
+            self.ending_song = False
         font = pygame.font.Font(None, 45)
         text = font.render("Congrats you finally won the game! I hope you enjoyed!!!", True, ('white'))
         textRect = text.get_rect()
@@ -169,10 +177,10 @@ class PlayerAmongUs(pygame.sprite.Sprite):
         textRect.center = (self.rect.topleft - self.offset)
         self.surface.blit(text, textRect)
 
-    def update(self, event_list):
+    def update(self, event_list, can_move):
         self.win_level()
         self.death_score()
-        self.get_input(event_list)
+        self.get_input(event_list, can_move)
         self.move()
         self.horizontal_collision()
         self.apply_gravity()

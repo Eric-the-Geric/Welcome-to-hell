@@ -8,7 +8,7 @@ class Button():
         self.surface = pygame.display.get_surface()
         self.image = pygame.image.load(path).convert_alpha()
         self.image.set_alpha(150)
-        #self.image = pygame.transform.scale(self.image, (300, 150))
+        self.image = pygame.transform.scale(self.image, (300, 150))
         self.rect = self.image.get_rect(center = pos)
         self.clicked = False
         self.pos = pos
