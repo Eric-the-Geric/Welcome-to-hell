@@ -136,7 +136,7 @@ class Level_1:
 
 
         # Setting up images   
-        self.lava_image = import_complicated_full_sprite_sheet("Graphics2/lava block.png",
+        self.lava_image = import_complicated_full_sprite_sheet("Graphics2/lava block - Copy.png",
                                                             32, 32, (255,127,39))
         self.terrain_image = import_complicated_full_sprite_sheet("Graphics2/grass.png",
                                                             32, 32, (255,127,39))
@@ -182,7 +182,7 @@ class Level_1:
         number = 1
         pos = (0,0)
         if self.player.rect.centery < 30*tile_size:
-            number = random.randint(1, 30)
+            number = random.randint(1, 60)
             pos = (random.randint(32*tile_size, 53*tile_size), 0)
         elif self.player.rect.centery > 55*tile_size:
             number = random.randint(1, 30)

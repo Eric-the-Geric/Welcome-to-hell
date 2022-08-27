@@ -53,8 +53,9 @@ class StaticTile(pygame.sprite.Sprite):
         
 
 class AnimatedTile(pygame.sprite.Sprite):
-    def __init__(self, group, pos, image, target):
+    def __init__(self, group, pos, image, target, scaled= False):
         super().__init__(group)
+        self.scaled = scaled
         self.target = target
         self.group = group
         self.image_list = image
@@ -82,6 +83,8 @@ class AnimatedTile(pygame.sprite.Sprite):
                     particle.kill()
     def animate(self):
         self.image = self.image_list[(int(self.frames) + self.modded) % self.modded]
+        if self.scaled:
+            self.image = pygame.transform.scale(self.image, (64, 64))
         self.frames += self.animation_speed
     
     def create_particles(self):
@@ -151,6 +154,7 @@ class Meteor(AnimatedTile):
                     self.explosion_sprites.remove(particle)
                     particle.kill()
                 if particle.direction.y == 0:
+                    self.explosion_sprites.remove(particle)
                     particle.kill()
     def update(self):
         for sprite in self.explosion_sprites:
@@ -170,13 +174,15 @@ class Meteor(AnimatedTile):
             self.screen_shake_counter += 1
 class WireEnemy(AnimatedTile):
     def __init__(self, group, pos, image, target, camera_group, harmful_group):
-        super().__init__(group, pos, image, target)
+        super().__init__(group, pos, image, target, scaled = True)
+        
         self.camera_group = camera_group
         self.harmful_group = harmful_group
         self.target = target
         self.zonex = self.image.get_width()*15
         self.zoney = self.image.get_height()*15
         self.zonerect = pygame.Rect(self.rect.centerx-(self.zonex//2), self.rect.centery-(self.zoney//2), self.zonex, self.zoney)
+        
         self.surface = pygame.display.get_surface()
         self.pos = pygame.math.Vector2(pos)
         
