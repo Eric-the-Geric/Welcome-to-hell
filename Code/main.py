@@ -26,7 +26,7 @@ def display_fps(clock, level1, offset, surface, font):
 def main():
     # Initialize pygame
     pygame.init()
-
+    pygame.mixer.init()
     # Constant variables
     surface = pygame.display.set_mode(screen)
     pygame.display.set_caption('Kinda sus')
